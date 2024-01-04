@@ -1,24 +1,69 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Navbar from './component/Navbar'
 import banner from './assets/Screenshot (15).png'
-// import './App.css'
+// import Clipboard from 'clipboard-polyfill';
+import './App.css'
 
 function App() {
-  const [Range, setRange] = useState(5)
-  const [length, Setlength] = useState()
-  const [Number, setNumber] = useState(false)
+  const [password , setPassword] = useState('KGF');
+  const [length , setlenght] = useState(8);
+  const [numbers , setNumbers] = useState(false);
+  const [symbol , setSymbol] = useState(false);
+  const [Uppercase , setUppercase] = useState(false);
+  const [Lowercase , setLowercase] = useState(true);
 
-  function AddNumber(e) {
+  useEffect(()=>{
+  generatePassword()
+  }, [length , numbers , symbol , Uppercase , Lowercase])
 
+
+  function handle(){
+    navigator.clipboard.writeText(password)
+    alert("Copied")
+    
+    
+  }
+
+
+  function includeUpperCase(e){
+    setUppercase(e.target.checked)
+  }
+  function includeLowerCase(e){
+    setLowercase(e.target.checked)
+  }
+  function includeNumber(e){
+    setNumbers(e.target.checked)
+  }
+  function includeSymbol(e){
+    setSymbol(e.target.checked)
+  }
+ 
+
+  function generatePassword(){
+    let pass = '';
+    let str = 'abcdefghijklmnopqrstuvwxyz'
+
+    if(numbers){
+      str += "0123456789"
+    }
+    if(symbol){
+      str += "$^<>&%#@!+-"
+    }
+    if(Uppercase){
+      str += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    }
+    for (let i = 0; i < length; i++) {
+      let RandomNumber = Math.floor(Math.random() * str.length )
+      let characters = str.charAt(RandomNumber)
+      pass += characters;
+    }
+    setPassword(pass); 
+
+  
   }
 
 
 
-  function Ranges(e) {
-
-    console.log(e.target.value);
-  }
-  // Ranges()
 
 
 
@@ -30,12 +75,8 @@ function App() {
         <h1 className='text-5xl font-bold mt-12 text-center'>Instantly generate a secure, <br /> random password with the <br /> LastPass online tool</h1>
         <p  className='text-center mt-10 font-medium'>Go beyond online generators with LastPass Premium. No matter what device or app you’re <br /> using, all your passwords are automatically generated, saved and synced – wherever you go.</p>
 
-        <div className='mt-7 gap-56 flex p-7 bg-white w-[50%] rounded-md ml-[25%]'>
-          <h1 className='ml-5 font-bold text-2xl'>Abcd</h1>
-          <div className='ml-48 gap-10 flex'>
-          <p className='mt-2'>icon</p>
-          <p className='mt-2'>cion</p>
-          </div>
+        <div className='mt-7  p-7 bg-white w-[50%]  rounded-md ml-[25%]'>
+          <h1 className='ml-5 font-bold text-2xl'>{password}</h1>
         </div>
         <div className='w-[50%] ml-[25%] h-2 rounded-sm bg-gray-400'>
         .
@@ -48,27 +89,29 @@ function App() {
 
           <div className='flex gap-20'>
           <div className='mt-20 ml-6'>
-            <label htmlFor="length"></label>
-            <span className='border-black border-solid border-[1px] px-3 py-1'>{Range}</span> <input className='ml-3 text-red-400 bg-red-300  w-56 ' type='range' id='length' onChange={Ranges} />
+            <label htmlFor="lengths"><span className='border-black border-solid border-[1px] px-3 py-1'>{length}</span></label>
+             <input className='ml-4 ' type='range' id='lengths' min={8} max={40} onChange={(e)=>setlenght(e.target.value)} value={length}  />
           </div>
 
           <div className='ml-20 mt-4'>
-            <input className='mr-3'  type="checkbox" onChange={AddNumber} />
-            <label className='text-xl font-bold '  htmlFor="">UpperCase</label> <br /> 
+            <input className='mr-3'  type="checkbox" id='uppercase' onChange={includeUpperCase}  />
+            <label className='text-xl font-bold '  htmlFor="uppercase">UpperCase</label> <br /> 
 
-            <input className='mt-5 mr-3' type="checkbox" onChange={AddNumber} />
-            <label className='text-xl font-bold ' htmlFor="">LowerCase</label> <br />
+            <input className='mt-5 mr-3' type="checkbox" id='lowercase' onChange={includeLowerCase} />
+            <label className='text-xl font-bold ' htmlFor="lowercase">LowerCase</label> <br />
 
-            <input className='mt-5 mr-3'  type="checkbox" onChange={AddNumber} />
-            <label className='text-xl font-bold ' htmlFor="">Number</label>
+            <input className='mt-5 mr-3'  type="checkbox"id='number' onChange={includeNumber} />
+            <label className='text-xl font-bold ' htmlFor="number">Number</label>
             <br />
-            <input className='mt-5 mr-3 mb-7' type="checkbox" onChange={AddNumber} />
-            <label className='text-xl font-bold '  htmlFor="">Symbol</label>
+            <input className='mt-5 mr-3 mb-7' type="checkbox" id='symbol' onChange={includeSymbol}  />
+            <label className='text-xl font-bold '  htmlFor="symbol">Symbol</label>
           </div>
           </div>
 
 
         </div>
+
+        <button onClick={handle} className='px-10 rounded-lg text-white font-Lobster text-xl py-3 mb-9 ml-[41%] mt-5 bg-red-500'>Copy Password</button>
 
       </div>
     </>
